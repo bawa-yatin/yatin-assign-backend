@@ -64,6 +64,7 @@ CORS_ALLOW_METHODS = [
     "POST",
     "PUT",
 ]
+
 CORS_ALLOW_HEADERS = [
     "accept",
     "accept-encoding",
@@ -149,6 +150,7 @@ REST_FRAMEWORK = {
 SITE_DOMAIN = 'http://localhost:3000'
 
 STRIPE_SECRET_KEY = 'sk_test_51LNZ7iSGJZ7JUrEoq1t2uLiW9NcYakqFcbeYXKLpAOJBJGcOsSPQUThgatKMS8WJ19MvM82bmbWRtc1UdmE0n8vf00TZZAwvCQ'
+STRIPE_WEBHOOK_SECRET = "whsec_dd1c842bcfa01a73a4c38de6ae797ffa7e28bdba2530c8dd6a8cf9e6f550eab3"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
