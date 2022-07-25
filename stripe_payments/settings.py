@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -97,13 +101,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'stripe_payments.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
+# Settings for storing data in postgres database..Credentials being fetched from
+# .env file
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USERNAME'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -149,8 +157,11 @@ REST_FRAMEWORK = {
 
 SITE_DOMAIN = 'http://localhost:3000'
 
-STRIPE_SECRET_KEY = 'sk_test_51LNZ7iSGJZ7JUrEoq1t2uLiW9NcYakqFcbeYXKLpAOJBJGcOsSPQUThgatKMS8WJ19MvM82bmbWRtc1UdmE0n8vf00TZZAwvCQ'
-STRIPE_WEBHOOK_SECRET = "whsec_dd1c842bcfa01a73a4c38de6ae797ffa7e28bdba2530c8dd6a8cf9e6f550eab3"
+# Stripe Secret key for working with built-in checkout api provided by Stripe
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET')
+
+# Stripe Webhook Secret key for working with webhooks.
+STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

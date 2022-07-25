@@ -1,3 +1,6 @@
+# Base URLs file for checkout page and for initiating webhooks when saving data to
+# PostGRES database
+
 from django.urls import path, include
 from payments.views import stripe_webhook
 
