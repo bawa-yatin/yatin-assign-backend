@@ -7,18 +7,15 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from .models import ProductDetails
 
-# Stripe secret key getting fetched from settings.py file
+# Stripe secret key for authenticating API requests
 stripe.api_key = settings.STRIPE_SECRET_KEY
-
-# Product price id getting fetched from .env file
 price_id = os.environ.get('PRICE_ID')
 
 
 # Class view for rendering built-in stripe checkout page on the basis of quantity
-# selected. Price generated according to the quantity
+# selected.
 class StripeCheckoutView(APIView):
     def post(self, request):
         data = request.data
@@ -28,13 +25,12 @@ class StripeCheckoutView(APIView):
         product_name = data['product']
 
         try:
-            # Creation of checkout session consisting of  line items,currency, and
+            # Creation of checkout session consisting of line items,currency, and
             # acceptable payment methods which customer will see on checkout page.
             checkout_session = stripe.checkout.Session.create(
                 line_items=[
                     {
-                        'price': price_id,  # Here price_id is given of the product
-                        # we want to sell
+                        'price': price_id,
                         'quantity': quantity,
                     },
                 ],
@@ -48,7 +44,7 @@ class StripeCheckoutView(APIView):
             )
 
             # After creation of session, redirecting customer to the URL for the
-            # Checkout page returned in response.
+            # checkout page returned in response.
             return redirect(checkout_session.url)
         except:
             return Response({"error": "Something went wrong while creating payment checkout session"},
@@ -66,7 +62,7 @@ def stripe_webhook(request):
     sig_header = request.META['HTTP_STRIPE_SIGNATURE']
     event = None
 
-    # Verifying the webhook that came from stripe using the payload, Stripe signature,
+    # Verifying webhook that came from stripe using the payload, Stripe signature,
     # and Stripe webhook secret. If the webhook is verified we can then access
     # the data from the event
     try:
@@ -74,11 +70,9 @@ def stripe_webhook(request):
             payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
         )
     except ValueError:
-        # Invalid payload
         return HttpResponse(status=400)
 
     except stripe.error.SignatureVerificationError:
-        # Invalid signature
         return HttpResponse(status=400)
 
     # Handle the checkout.session.completed event
@@ -86,7 +80,6 @@ def stripe_webhook(request):
         session = event['data']['object']
         create_order(session)
 
-    # Passed signature verification
     return HttpResponse(status=200)
 
 
