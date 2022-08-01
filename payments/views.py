@@ -4,9 +4,9 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework import generics
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from .models import ProductDetails
 
 # Stripe secret key for authenticating API requests
@@ -16,8 +16,8 @@ price_id = os.environ.get('PRICE_ID')
 
 # Class view for rendering built-in stripe checkout page on the basis of quantity
 # selected.
-class StripeCheckoutView(APIView):
-    def post(self, request):
+class StripeCheckoutView(generics.CreateAPIView):
+    def post(self, request, *args, **kwargs):
         data = request.data
         global quantity
         quantity = data['quantity']
